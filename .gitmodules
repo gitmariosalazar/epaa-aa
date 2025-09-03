@@ -1,0 +1,6 @@
+[submodule "readings"]
+	path = readings
+	url = https://github.com/gitmariosalazar/readings.git
+[submodule "client-gateway"]
+	path = client-gateway
+	url = https://github.com/gitmariosalazar/epaa-gateway.git
