@@ -7,3 +7,6 @@
 [submodule "qrcode"]
 	path = qrcode
 	url = https://github.com/gitmariosalazar/qrcode.git
+[submodule "authentication"]
+	path = authentication
+	url = https://github.com/gitmariosalazar/auth-epaa.git
