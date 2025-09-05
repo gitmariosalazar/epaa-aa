@@ -1,0 +1,20 @@
+services:
+  qrcode-service:
+    build:
+      context: ./qrcode
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: qrcode-service
+    ports:
+      - '3005:3005'
+    volumes:
+      - ./qrcode:/usr/src/app
+    command: npm run start:dev
+    env_file:
+      - ./qrcode/.env
+    networks:
+      - epaa-network
+
+networks:
+  epaa-network:
+    external: true
