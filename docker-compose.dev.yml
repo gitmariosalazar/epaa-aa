@@ -1,4 +1,49 @@
 services:
+  client-gateway-epaa:
+    image: client-gateway-epaa:latest
+    build:
+      context: ./client-gateway
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: client-gateway-epaa
+    ports:
+      - '${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}'
+    volumes:
+      - ./client-gateway:/usr/src/app
+      - client-gateway-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./client-gateway/.env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
   qrcode-service:
     build:
       context: ./qrcode
@@ -6,14 +51,46 @@ services:
     restart: unless-stopped
     container_name: qrcode-service
     ports:
-      - '3005:3005'
+      - '${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}'
     volumes:
       - ./qrcode:/usr/src/app
-    command: npm run start:dev
+      - qrcode-service-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./qrcode/.env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+volumes:
+  client-gateway-node-modules:
+  qrcode-service-node-modules:
 
 networks:
   epaa-network:
