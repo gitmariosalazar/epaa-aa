@@ -88,9 +88,54 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  readings-service:
+    build:
+      context: ./readings
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: readings-service
+    ports:
+      - '${READINGS_SERVER_PORT_DEVELOPMENT:-3008}:${READINGS_SERVER_PORT_DEVELOPMENT:-3008}'
+    volumes:
+      - ./readings:/usr/src/app
+      - readings-service-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./readings/.env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-3008}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 volumes:
   client-gateway-node-modules:
   qrcode-service-node-modules:
+  readings-service-node-modules:
 
 networks:
   epaa-network:
