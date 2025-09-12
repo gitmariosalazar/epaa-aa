@@ -7,3 +7,6 @@
 [submodule "authentication"]
 	path = authentication
 	url = https://github.com/gitmariosalazar/auth-epaa.git
+[submodule "readings"]
+	path = readings
+	url = https://github.com/gitmariosalazar/readings.git
