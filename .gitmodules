@@ -10,3 +10,6 @@
 [submodule "readings"]
 	path = readings
 	url = https://github.com/gitmariosalazar/readings.git
+[submodule "epaa-database-legacy"]
+	path = epaa-database-legacy
+	url = https://github.com/gitmariosalazar/epaa-databse-legacy.git
