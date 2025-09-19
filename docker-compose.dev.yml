@@ -95,7 +95,7 @@ services:
     restart: unless-stopped
     container_name: readings-service
     ports:
-      - '${READINGS_SERVER_PORT_DEVELOPMENT:-3008}:${READINGS_SERVER_PORT_DEVELOPMENT:-3008}'
+      - '${READINGS_SERVER_PORT_DEVELOPMENT:-3007}:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}'
     volumes:
       - ./readings:/usr/src/app
       - readings-service-node-modules:/usr/src/app/node_modules
@@ -112,7 +112,7 @@ services:
           'CMD',
           'curl',
           '-f',
-          'http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-3008}/health'
+          'http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}/health'
         ]
       interval: 30s
       timeout: 10s
