@@ -7,24 +7,25 @@ services:
     restart: unless-stopped
     container_name: client-gateway-epaa
     ports:
-      - '${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}'
+      - "${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}"
     volumes:
       - ./client-gateway:/usr/src/app
       - client-gateway-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
+    command: ["npm", "run", "start:dev"]
     env_file:
       - ./client-gateway/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
     networks:
       - epaa-network
     healthcheck:
       test:
         [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}/health'
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -33,16 +34,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
 
   qrcode-service:
     build:
@@ -51,24 +52,25 @@ services:
     restart: unless-stopped
     container_name: qrcode-service
     ports:
-      - '${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}'
+      - "${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}"
     volumes:
       - ./qrcode:/usr/src/app
       - qrcode-service-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
+    command: ["npm", "run", "start:dev"]
     env_file:
       - ./qrcode/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
     networks:
       - epaa-network
     healthcheck:
       test:
         [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}/health'
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -77,16 +79,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
 
   readings-service:
     build:
@@ -95,24 +97,25 @@ services:
     restart: unless-stopped
     container_name: readings-service
     ports:
-      - '${READINGS_SERVER_PORT_DEVELOPMENT:-3007}:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}'
+      - "${READINGS_SERVER_PORT_DEVELOPMENT:-3007}:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}"
     volumes:
       - ./readings:/usr/src/app
       - readings-service-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
+    command: ["npm", "run", "start:dev"]
     env_file:
       - ./readings/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
     networks:
       - epaa-network
     healthcheck:
       test:
         [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}/health'
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -121,16 +124,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
 
   epaa-database-legacy-service:
     build:
@@ -139,24 +142,25 @@ services:
     restart: unless-stopped
     container_name: epaa-database-legacy-service
     ports:
-      - '${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}'
+      - "${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}"
     volumes:
       - ./epaa-database-legacy:/usr/src/app
       - epaa-database-legacy-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
+    command: ["npm", "run", "start:dev"]
     env_file:
       - ./epaa-database-legacy/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
     networks:
       - epaa-network
     healthcheck:
       test:
         [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}/health'
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -165,16 +169,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   client-gateway-node-modules:
