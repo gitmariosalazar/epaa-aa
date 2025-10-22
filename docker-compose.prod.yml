@@ -31,6 +31,8 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+    volumes:
+      - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
 
   qrcode-service:
     image: qrcode-service:latest
@@ -64,6 +66,8 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+    volumes:
+      - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
 
   readings-service:
     image: readings-service:latest

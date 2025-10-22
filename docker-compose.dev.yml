@@ -1,31 +1,31 @@
 services:
-  client-gateway-epaa:
+  client-gateway-epaa-dev:
     image: client-gateway-epaa:latest
     build:
       context: ./client-gateway
       dockerfile: dockerfile.dev
     restart: unless-stopped
-    container_name: client-gateway-epaa
+    container_name: client-gateway-epaa-dev
     ports:
-      - "${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}"
+      - "${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}:${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}"
     volumes:
       - ./client-gateway:/usr/src/app
       - client-gateway-node-modules:/usr/src/app/node_modules
     command: ["npm", "run", "start:dev"]
     env_file:
-      - ./client-gateway/.env
+      - ./client-gateway/.env.dev
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
     networks:
-      - epaa-network
+      - epaa-network-dev
     healthcheck:
       test:
         [
           "CMD",
           "curl",
           "-f",
-          "http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-3005}/health",
+          "http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -45,32 +45,32 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  qrcode-service:
+  qrcode-service-dev:
     build:
       context: ./qrcode
       dockerfile: dockerfile.dev
     restart: unless-stopped
-    container_name: qrcode-service
+    container_name: qrcode-service-dev
     ports:
-      - "${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}"
+      - "${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}"
     volumes:
       - ./qrcode:/usr/src/app
       - qrcode-service-node-modules:/usr/src/app/node_modules
     command: ["npm", "run", "start:dev"]
     env_file:
-      - ./qrcode/.env
+      - ./qrcode/.env.dev
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
     networks:
-      - epaa-network
+      - epaa-network-dev
     healthcheck:
       test:
         [
           "CMD",
           "curl",
           "-f",
-          "http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-3006}/health",
+          "http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -90,32 +90,32 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  readings-service:
+  readings-service-dev:
     build:
       context: ./readings
       dockerfile: dockerfile.dev
     restart: unless-stopped
-    container_name: readings-service
+    container_name: readings-service-dev
     ports:
-      - "${READINGS_SERVER_PORT_DEVELOPMENT:-3007}:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}"
+      - "${READINGS_SERVER_PORT_DEVELOPMENT:-4007}:${READINGS_SERVER_PORT_DEVELOPMENT:-4007}"
     volumes:
       - ./readings:/usr/src/app
       - readings-service-node-modules:/usr/src/app/node_modules
     command: ["npm", "run", "start:dev"]
     env_file:
-      - ./readings/.env
+      - ./readings/.env.dev
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
     networks:
-      - epaa-network
+      - epaa-network-dev
     healthcheck:
       test:
         [
           "CMD",
           "curl",
           "-f",
-          "http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-3007}/health",
+          "http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-4007}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -135,32 +135,32 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  epaa-database-legacy-service:
+  epaa-database-legacy-service-dev:
     build:
       context: ./epaa-database-legacy
       dockerfile: dockerfile.dev
     restart: unless-stopped
-    container_name: epaa-database-legacy-service
+    container_name: epaa-database-legacy-service-dev
     ports:
-      - "${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}"
+      - "${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}"
     volumes:
       - ./epaa-database-legacy:/usr/src/app
       - epaa-database-legacy-node-modules:/usr/src/app/node_modules
     command: ["npm", "run", "start:dev"]
     env_file:
-      - ./epaa-database-legacy/.env
+      - ./epaa-database-legacy/.env.dev
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
     networks:
-      - epaa-network
+      - epaa-network-dev
     healthcheck:
       test:
         [
           "CMD",
           "curl",
           "-f",
-          "http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-3009}/health",
+          "http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}/health",
         ]
       interval: 30s
       timeout: 10s
@@ -187,5 +187,5 @@ volumes:
   epaa-database-legacy-node-modules:
 
 networks:
-  epaa-network:
+  epaa-network-dev:
     external: true

@@ -1,0 +1,22 @@
+services:
+  mssql-epaa:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_epaa_container
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: 'Developer'
+    ports:
+      - "${MSSQL_PORT}:1433"
+    volumes:
+      - /home/sigepaa/mssql/data:/var/opt/mssql/data
+      - /home/sigepaa/sigepaa/database/backup:/var/opt/mssql/backup:ro
+    networks:
+      - epaa-network
+
+networks:
+  epaa-network:
+    external: true
