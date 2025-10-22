@@ -1,27 +1,27 @@
 services:
-  kafka-epaa:
+  kafka-epaa-dev:
     image: confluentinc/cp-kafka:latest
-    container_name: kafka-epaa
+    container_name: kafka-epaa-dev
     ports:
-      - "9192:9192"   # Puerto para clientes externos
-      - "9193:9193"   # Puerto para comunicación interna (inter-broker)
-      - "9194:9194"   # Puerto de controller KRaft (solo interno)
+      - "9195:9195"   # Puerto para clientes externos
+      - "9196:9196"   # Puerto para comunicación interna (inter-broker)
+      - "9197:9197"   # Puerto de controller KRaft (solo interno)
     env_file:
-      - .env
+      - .env.dev
     environment:
       ########################
       # Configuración básica #
       ########################
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_NODE_ID: 1
-      CLUSTER_ID: ${CLUSTER_ID:-a1b2c3d4e5f67890abcd12}
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-epaa:9194
+      CLUSTER_ID: ${CLUSTER_ID:-b7c8d9e0f1g23456hijk78}
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-epaa-dev:9197
 
       ####################
       # Listeners        #
       ####################
-      KAFKA_LISTENERS: EXTERNAL://0.0.0.0:9192,INTERNAL://0.0.0.0:9193,CONTROLLER://0.0.0.0:9194
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:9192,INTERNAL://kafka-epaa:9193
+      KAFKA_LISTENERS: EXTERNAL://0.0.0.0:9195,INTERNAL://0.0.0.0:9196,CONTROLLER://0.0.0.0:9197
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:9195,INTERNAL://kafka-epaa-dev:9196,CONTROLLER://kafka-epaa-dev:9197
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
@@ -67,11 +67,11 @@ services:
     mem_limit: 4g
     mem_reservation: 2g
     networks:
-      - epaa-network
+      - epaa-network-dev
     volumes:
-      - kafka-epaa-data:/var/lib/kafka/data
+      - kafka-epaa-data-dev:/var/lib/kafka/data
     healthcheck:
-      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9192"]
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9195"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -89,12 +89,14 @@ services:
 #################
 # Redes/Volumen #
 #################
+# Redes/Volumen #
+#################
 networks:
-  epaa-network:
+  epaa-network-dev:
     external: true
     #driver: bridge
     #name: epaa-network
 
 volumes:
-  kafka-epaa-data:
-    name: kafka-epaa-data
+  kafka-epaa-data-dev:
+    name: kafka-epaa-data-dev

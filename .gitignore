@@ -1,6 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/vs,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=vs,node
 
+docker/postgresql/.env*
+docker/sqlserver/.env*
+docker/sqlserver/.env*
+docker/kafka/.env*
+
 ### Node ###
 # Logs
 logs
