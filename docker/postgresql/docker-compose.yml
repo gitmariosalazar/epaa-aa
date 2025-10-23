@@ -13,7 +13,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - postgres_epaa_data:/var/lib/postgresql/data
+      - postgres_epaa_data:/var/lib/postgresql/
       - ./postgres-config/postgresql.conf:/etc/postgresql/postgresql.conf:ro
       - ./postgres-init:/docker-entrypoint-initdb.d:ro
     networks:
@@ -38,7 +38,7 @@ services:
       options:
         max-size: "10m"
         max-file: "5"
-    shm_size: '1g'
+    shm_size: "1g"
 
 volumes:
   postgres_epaa_data:
