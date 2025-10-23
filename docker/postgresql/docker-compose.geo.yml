@@ -1,0 +1,48 @@
+services:
+  postgis-epaa:
+    image: postgis/postgis:latest
+    container_name: postgis_epaa_container
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGIS_USER}
+      POSTGRES_PASSWORD: ${POSTGIS_PASSWORD}
+      POSTGRES_DB: ${POSTGIS_DB}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "${POSTGIS_PORT}:5432"
+    volumes:
+      - postgis_epaa_data:/var/lib/postgresql/data
+      - ./postgis-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - epaa-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGIS_USER} -d ${POSTGIS_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 131072
+    mem_limit: 2g
+    mem_reservation: 1g
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    shm_size: '1g'
+
+volumes:
+  postgis_epaa_data:
+    name: postgis_epaa_data
+
+networks:
+  epaa-network:
+    external: true
