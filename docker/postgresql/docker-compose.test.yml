@@ -1,10 +1,10 @@
 services:
-  postgres-epaa-test:
+  postgres-epaa:
     image: postgres:latest
-    container_name: postgres_epaa_test_container
+    container_name: postgres_epaa_container
     restart: unless-stopped
     env_file:
-      - .env.test
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -13,11 +13,11 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - postgres_epaa_test_data:/var/lib/postgresql/data
+      - postgres_epaa_data:/var/lib/postgresql/
       - ./postgres-config/postgresql.conf:/etc/postgresql/postgresql.conf:ro
       - ./postgres-init:/docker-entrypoint-initdb.d:ro
     networks:
-      - epaa-network
+      - epaa-network-dev
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 30s
@@ -38,12 +38,12 @@ services:
       options:
         max-size: "10m"
         max-file: "5"
-    shm_size: '1g'
+    shm_size: "1g"
 
 volumes:
-  postgres_epaa_test_data:
-    name: postgres_epaa_test_data
+  postgres_epaa_data:
+    name: postgres_epaa_data
 
 networks:
-  epaa-network:
+  epaa-network-dev:
     external: true
