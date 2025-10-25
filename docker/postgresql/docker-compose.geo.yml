@@ -1,6 +1,8 @@
 services:
   postgis-epaa:
-    image: postgis/postgis:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: postgis_epaa_container
     restart: unless-stopped
     env_file:
