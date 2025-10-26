@@ -13,3 +13,6 @@
 [submodule "epaa-database-legacy"]
 	path = epaa-database-legacy
 	url = https://github.com/gitmariosalazar/epaa-databse-legacy.git
+[submodule "property"]
+	path = property
+	url = https://github.com/gitmariosalazar/property.git
