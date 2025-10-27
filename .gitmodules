@@ -23,3 +23,7 @@
 	path = companies
 	url = https://github.com/gitmariosalazar/companies-epaa.git
 	branch = develop
+[submodule "connection"]
+	path = connection
+	url = https://github.com/gitmariosalazar/connection-epaa.git
+	branch = develop
