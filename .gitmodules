@@ -16,3 +16,6 @@
 [submodule "property"]
 	path = property
 	url = https://github.com/gitmariosalazar/property.git
+[submodule "clients"]
+	path = clients
+	url = https://github.com/gitmariosalazar/customers-epaa.git
