@@ -1,25 +1,26 @@
 services:
-  postgres-epaa:
-    image: postgres:latest
-    container_name: postgres_epaa_container
+  postgis-epaa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: postgis_epaa_container
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGIS_USER}
+      POSTGRES_PASSWORD: ${POSTGIS_PASSWORD}
+      POSTGRES_DB: ${POSTGIS_DB}
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${POSTGIS_PORT}:5432"
     volumes:
-      - postgres_epaa_data:/var/lib/postgresql/
-      - ./postgres-config/postgresql.conf:/etc/postgresql/postgresql.conf:ro
-      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+      - postgis_epaa_data:/var/lib/postgresql/data
+      - ./postgis-init:/docker-entrypoint-initdb.d:ro
     networks:
-      - epaa-network
+      - epaa-network-dev
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGIS_USER} -d ${POSTGIS_DB}"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -41,9 +42,9 @@ services:
     shm_size: "1g"
 
 volumes:
-  postgres_epaa_data:
-    name: postgres_epaa_data
+  postgis_epaa_data:
+    name: postgis_epaa_data
 
 networks:
-  epaa-network:
+  epaa-network-dev:
     external: true

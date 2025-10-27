@@ -13,9 +13,10 @@
 [submodule "epaa-database-legacy"]
 	path = epaa-database-legacy
 	url = https://github.com/gitmariosalazar/epaa-databse-legacy.git
-[submodule "property"]
-	path = property
-	url = https://github.com/gitmariosalazar/property.git
 [submodule "clients"]
 	path = clients
 	url = https://github.com/gitmariosalazar/customers-epaa.git
+[submodule "property"]
+	path = property
+	url = https://github.com/gitmariosalazar/property.git
+>>>>>>> origin/develop
