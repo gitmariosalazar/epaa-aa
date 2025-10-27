@@ -180,11 +180,103 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  property-service-dev:
+    build:
+      context: ./property
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: property-service-dev
+    ports:
+      - "${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}"
+    volumes:
+      - ./property:/usr/src/app
+      - property-service-node-modules:/usr/src/app/node_modules
+    command: ["npm", "run", "start:dev"]
+    env_file:
+      - ./property/.env.dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  clients-service-dev:
+    build:
+      context: ./clients
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: clients-service-dev
+    ports:
+      - "${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}"
+    volumes:
+      - ./clients:/usr/src/app
+      - clients-service-node-modules:/usr/src/app/node_modules
+    command: ["npm", "run", "start:dev"]
+    env_file:
+      - ./clients/.env.dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   client-gateway-node-modules:
   qrcode-service-node-modules:
   readings-service-node-modules:
   epaa-database-legacy-node-modules:
+  property-service-node-modules:
+  clients-service-node-modules:
 
 networks:
   epaa-network-dev:
