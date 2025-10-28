@@ -270,6 +270,96 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  companies-service-dev:
+    build:
+      context: ./companies
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: companies-service-dev
+    ports:
+      - "${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}"
+    volumes:
+      - ./companies:/usr/src/app
+      - companies-service-node-modules:/usr/src/app/node_modules
+    command: ["npm", "run", "start:dev"]
+    env_file:
+      - ./companies/.env.dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  connection-service-dev:
+    build:
+      context: ./connection
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: connection-service-dev
+    ports:
+      - "${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}:${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}"
+    volumes:
+      - ./connection:/usr/src/app
+      - connection-service-node-modules:/usr/src/app/node_modules
+    command: ["npm", "run", "start:dev"]
+    env_file:
+      - ./connection/.env.dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   client-gateway-node-modules:
   qrcode-service-node-modules:
@@ -277,6 +367,8 @@ volumes:
   epaa-database-legacy-node-modules:
   property-service-node-modules:
   clients-service-node-modules:
+  companies-service-node-modules:
+  connection-service-node-modules:
 
 networks:
   epaa-network-dev:
