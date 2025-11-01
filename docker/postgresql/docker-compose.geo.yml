@@ -15,7 +15,7 @@ services:
     ports:
       - "${POSTGIS_PORT}:5432"
     volumes:
-      - postgis_epaa_data:/var/lib/postgresql/data
+      - postgis_epaa_data:/var/lib/postgresql
       - ./postgis-init:/docker-entrypoint-initdb.d:ro
     networks:
       - epaa-network-dev
