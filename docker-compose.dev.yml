@@ -11,6 +11,9 @@ services:
     volumes:
       - ./client-gateway:/usr/src/app
       - client-gateway-node-modules:/usr/src/app/node_modules
+      - /home/sigepaa/sigepaa/images/connections:/home/sigepaa/sigepaa/images/connections
+      - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
+      - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
     command: ["npm", "run", "start:dev"]
     env_file:
       - ./client-gateway/.env.dev
