@@ -363,6 +363,51 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  work-orders-service-dev:
+    build:
+      context: ./work-orders
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: work-orders-service-dev
+    ports:
+      - "${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}"
+    volumes:
+      - ./work-orders:/usr/src/app
+      - work-orders-service-node-modules:/usr/src/app/node_modules
+    command: ["npm", "run", "start:dev"]
+    env_file:
+      - ./work-orders/.env.dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   client-gateway-node-modules:
   qrcode-service-node-modules:
@@ -372,6 +417,7 @@ volumes:
   clients-service-node-modules:
   companies-service-node-modules:
   connection-service-node-modules:
+  work-orders-service-node-modules:
 
 networks:
   epaa-network-dev:

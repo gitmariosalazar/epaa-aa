@@ -27,3 +27,6 @@
 	path = connection
 	url = https://github.com/gitmariosalazar/connection-epaa.git
 	branch = develop
+[submodule "work-orders"]
+	path = work-orders
+	url = https://github.com/gitmariosalazar/work-orders.git
