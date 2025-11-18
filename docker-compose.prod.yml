@@ -1,19 +1,25 @@
 services:
   client-gateway-epaa:
-    image: client-gateway-epaa:latest
+    image: client-gateway-epaa:production
     build:
       context: ./client-gateway
       dockerfile: dockerfile.prod
     restart: unless-stopped
     container_name: client-gateway-epaa
     ports:
-      - '${GATEWAY_SERVER_PORT_PRODUCTION:-3005}:3005'
+      - "${GATEWAY_SERVER_PORT_PRODUCTION:-3005}:${GATEWAY_SERVER_PORT_PRODUCTION:-3005}"
     env_file:
       - ./client-gateway/.env
     networks:
       - epaa-network
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3005/health']
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${GATEWAY_SERVER_PORT_PRODUCTION:-3005}/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -21,34 +27,42 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
+      - /home/sigepaa/sigepaa/images/connections:/home/sigepaa/sigepaa/images/connections
+      - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
 
   qrcode-service:
-    image: qrcode-service:latest
+    image: qrcode-service:production
     build:
       context: ./qrcode
       dockerfile: dockerfile.prod
     restart: unless-stopped
     container_name: qrcode-service
     ports:
-      - '${QR_CODE_SERVER_PORT_PRODUCTION:-3006}:3006'
+      - "${QR_CODE_SERVER_PORT_PRODUCTION:-3006}:${QR_CODE_SERVER_PORT_PRODUCTION:-3006}"
     env_file:
       - ./qrcode/.env
     networks:
       - epaa-network
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3006/health']
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${QR_CODE_SERVER_PORT_PRODUCTION:-3006}/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -56,34 +70,40 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
 
   readings-service:
-    image: readings-service:latest
+    image: readings-service:production
     build:
       context: ./readings
       dockerfile: dockerfile.prod
     restart: unless-stopped
     container_name: readings-service
     ports:
-      - '${READINGS_SERVER_PORT_PRODUCTION:-3007}:3007'
+      - "${READINGS_SERVER_PORT_PRODUCTION:-3007}:${READINGS_SERVER_PORT_PRODUCTION:-3007}"
     env_file:
       - ./readings/.env
     networks:
       - epaa-network
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3007/health']
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${READINGS_SERVER_PORT_PRODUCTION:-3007}/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -91,32 +111,38 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
 
   epaa-database-legacy-service:
-    image: epaa-database-legacy-service:latest
+    image: epaa-database-legacy-service:production
     build:
       context: ./epaa-database-legacy
       dockerfile: dockerfile.prod
     restart: unless-stopped
     container_name: epaa-database-legacy-service
     ports:
-      - '${EPAA_DATABASE_LEGACY_SERVER_PORT_PRODUCTION:-3009}:3009'
+      - "${EPAA_DATABASE_LEGACY_SERVER_PORT_PRODUCTION:-3009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_PRODUCTION:-3009}"
     env_file:
       - ./epaa-database-legacy/.env
     networks:
       - epaa-network
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3009/health']
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_PRODUCTION:-3009}/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -124,16 +150,211 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: '10m'
-        max-file: '3'
+        max-size: "10m"
+        max-file: "3"
+
+  property-service:
+    image: property-service:production
+    build:
+      context: ./property
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: property-service
+    ports:
+      - "${PROPERTY_SERVER_PORT_PRODUCTION:-3010}:${PROPERTY_SERVER_PORT_PRODUCTION:-3010}"
+    env_file:
+      - ./property/.env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${PROPERTY_SERVER_PORT_PRODUCTION:-3010}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  client-service:
+    image: client-service:production
+    build:
+      context: ./clients
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: client-service
+    ports:
+      - "${CLIENTS_SERVER_PORT_PRODUCTION:-3011}:${CLIENTS_SERVER_PORT_PRODUCTION:-3011}"
+    env_file:
+      - ./clients/.env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${CLIENTS_SERVER_PORT_PRODUCTION:-3011}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  companies-service:
+    image: companies-service:production
+    build:
+      context: ./companies
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: companies-service
+    ports:
+      - "${COMPANIES_SERVER_PORT_PRODUCTION:-3012}:${COMPANIES_SERVER_PORT_PRODUCTION:-3012}"
+    env_file:
+      - ./companies/.env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${COMPANIES_SERVER_PORT_PRODUCTION:-3012}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  connection-service:
+    image: connection-service:production
+    build:
+      context: ./connection
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: connection-service
+    ports:
+      - "${CONNECTION_SERVER_PORT_PRODUCTION:-3013}:${CONNECTION_SERVER_PORT_PRODUCTION:-3013}"
+    env_file:
+      - ./connection/.env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${CONNECTION_SERVER_PORT_PRODUCTION:-3013}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  work-orders-service:
+    image: work-orders-service:production
+    build:
+      context: ./work-orders
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: work-orders-service
+    ports:
+      - "${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}:${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}"
+    env_file:
+      - ./work-orders/.env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   epaa-network:

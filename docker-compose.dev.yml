@@ -1,6 +1,6 @@
 services:
   client-gateway-epaa-dev:
-    image: client-gateway-epaa:latest
+    image: client-gateway-epaa-dev:development
     build:
       context: ./client-gateway
       dockerfile: dockerfile.dev
@@ -49,6 +49,7 @@ services:
         max-file: "3"
 
   qrcode-service-dev:
+    image: qrcode-service-dev:development
     build:
       context: ./qrcode
       dockerfile: dockerfile.dev
@@ -94,6 +95,7 @@ services:
         max-file: "3"
 
   readings-service-dev:
+    image: readings-service-dev:development
     build:
       context: ./readings
       dockerfile: dockerfile.dev
@@ -139,6 +141,7 @@ services:
         max-file: "3"
 
   epaa-database-legacy-service-dev:
+    image: epaa-database-legacy-service-dev:development
     build:
       context: ./epaa-database-legacy
       dockerfile: dockerfile.dev
@@ -184,6 +187,7 @@ services:
         max-file: "3"
 
   property-service-dev:
+    image: property-service-dev:development
     build:
       context: ./property
       dockerfile: dockerfile.dev
@@ -229,6 +233,7 @@ services:
         max-file: "3"
 
   clients-service-dev:
+    image: clients-service-dev:development
     build:
       context: ./clients
       dockerfile: dockerfile.dev
@@ -274,6 +279,7 @@ services:
         max-file: "3"
 
   companies-service-dev:
+    image: companies-service-dev:development
     build:
       context: ./companies
       dockerfile: dockerfile.dev
@@ -319,6 +325,7 @@ services:
         max-file: "3"
 
   connection-service-dev:
+    image: connection-service-dev:development
     build:
       context: ./connection
       dockerfile: dockerfile.dev
@@ -364,6 +371,7 @@ services:
         max-file: "3"
 
   work-orders-service-dev:
+    image: work-orders-service-dev:development
     build:
       context: ./work-orders
       dockerfile: dockerfile.dev
