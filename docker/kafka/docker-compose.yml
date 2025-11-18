@@ -2,33 +2,47 @@ services:
   kafka-epaa-prod:
     image: confluentinc/cp-kafka:latest
     container_name: kafka-epaa-prod
+    restart: unless-stopped
     ports:
-      - "9192:9192" # Puerto para clientes externos
-      - "9193:9193" # Puerto para comunicación interna (inter-broker)
-      - "9194:9194" # Puerto de controller KRaft (solo interno)
+      - "9192:9192" # Puerto externo para clientes
+      - "9193:9193" # Comunicación interna entre brokers
+      - "9194:9194" # Controller KRaft (solo interno)
+    networks:
+      - epaa-network
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 4g
+    mem_reservation: 2g
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 131072
+    volumes:
+      - kafka-epaa-prod-data:/var/lib/kafka/data
     env_file:
       - .env
     environment:
       ########################
-      # Configuración básica #
+      # Kafka KRaft roles     #
       ########################
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_NODE_ID: 1
       CLUSTER_ID: ${CLUSTER_ID:-a1b2c3d4e5f67890abcd12}
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-epaa-prod:9194
 
-      ####################
-      # Listeners        #
-      ####################
+      ########################
+      # Listeners            #
+      ########################
       KAFKA_LISTENERS: EXTERNAL://0.0.0.0:9192,INTERNAL://0.0.0.0:9193,CONTROLLER://0.0.0.0:9194
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:9192,INTERNAL://kafka-epaa:9193
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:9192,INTERNAL://kafka-epaa-prod:9193
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
-      ##############################
-      # Configuración de tópicos   #
-      ##############################
+      ########################
+      # Topics defaults       #
+      ########################
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_NUM_PARTITIONS: 6
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
@@ -36,9 +50,9 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
-      ##############################
-      # Rendimiento y recursos     #
-      ##############################
+      ########################
+      # Performance / Memory #
+      ########################
       KAFKA_LOG_RETENTION_HOURS: 168
       KAFKA_LOG_SEGMENT_BYTES: 1073741824
       KAFKA_LOG_RETENTION_BYTES: 1073741824
@@ -48,28 +62,18 @@ services:
       KAFKA_NUM_NETWORK_THREADS: 3
       KAFKA_COMPRESSION_TYPE: gzip
 
-      ##############################
-      # JVM / Memoria              #
-      ##############################
+      ########################
+      # JVM / GC tuning      #
+      ########################
       KAFKA_JVM_PERFORMANCE_OPTS: "-XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=20"
       KAFKA_HEAP_OPTS: "-Xms2g -Xmx2g"
 
-      ##############################
-      # Logging                    #
-      ##############################
+      ########################
+      # Logging              #
+      ########################
       KAFKA_LOG4J_LOGGERS: "kafka=INFO,org.apache.kafka=INFO"
       KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
 
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 131072
-    mem_limit: 4g
-    mem_reservation: 2g
-    networks:
-      - epaa-network
-    volumes:
-      - kafka-epaa-prod-data:/var/lib/kafka/data
     healthcheck:
       test:
         [
@@ -82,25 +86,17 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    user: "1000:1000"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
 
 #################
-# Redes/Volumen #
+# Networks       #
 #################
 networks:
   epaa-network:
     external: true
-    #driver: bridge
-    #name: epaa-network
 
+#################
+# Volumes        #
+#################
 volumes:
   kafka-epaa-prod-data:
     name: kafka-epaa-prod-data
