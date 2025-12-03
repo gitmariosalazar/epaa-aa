@@ -10,6 +10,7 @@ services:
       - "${GATEWAY_SERVER_PORT_PRODUCTION:-3005}:${GATEWAY_SERVER_PORT_PRODUCTION:-3005}"
     env_file:
       - ./client-gateway/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -53,6 +54,7 @@ services:
       - "${QR_CODE_SERVER_PORT_PRODUCTION:-3006}:${QR_CODE_SERVER_PORT_PRODUCTION:-3006}"
     env_file:
       - ./qrcode/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -94,6 +96,7 @@ services:
       - "${READINGS_SERVER_PORT_PRODUCTION:-3007}:${READINGS_SERVER_PORT_PRODUCTION:-3007}"
     env_file:
       - ./readings/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -133,6 +136,7 @@ services:
       - "${EPAA_DATABASE_LEGACY_SERVER_PORT_PRODUCTION:-3009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_PRODUCTION:-3009}"
     env_file:
       - ./epaa-database-legacy/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -172,6 +176,7 @@ services:
       - "${PROPERTY_SERVER_PORT_PRODUCTION:-3010}:${PROPERTY_SERVER_PORT_PRODUCTION:-3010}"
     env_file:
       - ./property/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -211,6 +216,7 @@ services:
       - "${CLIENTS_SERVER_PORT_PRODUCTION:-3011}:${CLIENTS_SERVER_PORT_PRODUCTION:-3011}"
     env_file:
       - ./clients/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -250,6 +256,7 @@ services:
       - "${COMPANIES_SERVER_PORT_PRODUCTION:-3012}:${COMPANIES_SERVER_PORT_PRODUCTION:-3012}"
     env_file:
       - ./companies/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -289,6 +296,7 @@ services:
       - "${CONNECTION_SERVER_PORT_PRODUCTION:-3013}:${CONNECTION_SERVER_PORT_PRODUCTION:-3013}"
     env_file:
       - ./connection/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:
@@ -328,6 +336,7 @@ services:
       - "${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}:${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}"
     env_file:
       - ./work-orders/.env
+      - .env
     networks:
       - epaa-network
     healthcheck:

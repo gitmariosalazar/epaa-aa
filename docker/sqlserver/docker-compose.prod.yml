@@ -1,0 +1,23 @@
+services:
+  mssql-epaa-prod:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_epaa_container
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_PID: Express        # o Evaluation / Standard si tienes licencia
+      MSSQL_COLLATION: SQL_Latin1_General_CP1_CI_AS
+    ports:
+      - "14330:1433"
+    volumes:
+      - /home/sigepaa/mssql/data-prod:/var/opt/mssql/data
+      - /home/sigepaa/sigepaa/database/backup-prod:/var/opt/mssql/backup:ro
+      - /home/sigepaa/sigepaa/database/scripts:/var/opt/mssql/scripts:ro
+    networks:
+      - epaa-network
+
+networks:
+  epaa-network:
+    name: epaa-network
+    external: true
