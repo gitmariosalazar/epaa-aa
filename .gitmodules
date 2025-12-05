@@ -30,3 +30,6 @@
 [submodule "work-orders"]
 	path = work-orders
 	url = https://github.com/gitmariosalazar/work-orders.git
+[submodule "sigame-legacy"]
+	path = sigame-legacy
+	url = https://github.com/gitmariosalazar/sigame-legacy.git
