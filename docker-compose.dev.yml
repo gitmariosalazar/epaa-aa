@@ -7,14 +7,14 @@ services:
     restart: unless-stopped
     container_name: client-gateway-epaa-dev
     ports:
-      - "${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}:${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}"
+      - '${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}:${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}'
     volumes:
       - ./client-gateway:/usr/src/app
       - client-gateway-node-modules:/usr/src/app/node_modules
       - /home/sigepaa/sigepaa/images/connections:/home/sigepaa/sigepaa/images/connections
       - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
       - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./client-gateway/.env.dev
     environment:
@@ -25,10 +25,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -37,16 +37,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   qrcode-service-dev:
     image: qrcode-service-dev:development
@@ -56,11 +56,11 @@ services:
     restart: unless-stopped
     container_name: qrcode-service-dev
     ports:
-      - "${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}"
+      - '${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}'
     volumes:
       - ./qrcode:/usr/src/app
       - qrcode-service-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./qrcode/.env.dev
     environment:
@@ -71,10 +71,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -83,16 +83,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   readings-service-dev:
     image: readings-service-dev:development
@@ -102,11 +102,11 @@ services:
     restart: unless-stopped
     container_name: readings-service-dev
     ports:
-      - "${READINGS_SERVER_PORT_DEVELOPMENT:-4007}:${READINGS_SERVER_PORT_DEVELOPMENT:-4007}"
+      - '${READINGS_SERVER_PORT_DEVELOPMENT:-4007}:${READINGS_SERVER_PORT_DEVELOPMENT:-4007}'
     volumes:
       - ./readings:/usr/src/app
       - readings-service-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./readings/.env.dev
     environment:
@@ -117,10 +117,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-4007}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-4007}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -129,16 +129,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   epaa-database-legacy-service-dev:
     image: epaa-database-legacy-service-dev:development
@@ -148,11 +148,11 @@ services:
     restart: unless-stopped
     container_name: epaa-database-legacy-service-dev
     ports:
-      - "${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}"
+      - '${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}'
     volumes:
       - ./epaa-database-legacy:/usr/src/app
       - epaa-database-legacy-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./epaa-database-legacy/.env.dev
     environment:
@@ -163,10 +163,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -175,16 +175,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   property-service-dev:
     image: property-service-dev:development
@@ -194,11 +194,11 @@ services:
     restart: unless-stopped
     container_name: property-service-dev
     ports:
-      - "${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}"
+      - '${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}'
     volumes:
       - ./property:/usr/src/app
       - property-service-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./property/.env.dev
     environment:
@@ -209,10 +209,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -221,16 +221,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   clients-service-dev:
     image: clients-service-dev:development
@@ -240,11 +240,11 @@ services:
     restart: unless-stopped
     container_name: clients-service-dev
     ports:
-      - "${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}"
+      - '${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}'
     volumes:
       - ./clients:/usr/src/app
       - clients-service-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./clients/.env.dev
     environment:
@@ -255,10 +255,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -267,16 +267,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   companies-service-dev:
     image: companies-service-dev:development
@@ -286,11 +286,11 @@ services:
     restart: unless-stopped
     container_name: companies-service-dev
     ports:
-      - "${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}"
+      - '${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}'
     volumes:
       - ./companies:/usr/src/app
       - companies-service-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./companies/.env.dev
     environment:
@@ -301,10 +301,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -313,16 +313,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   connection-service-dev:
     image: connection-service-dev:development
@@ -332,11 +332,11 @@ services:
     restart: unless-stopped
     container_name: connection-service-dev
     ports:
-      - "${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}:${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}"
+      - '${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}:${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}'
     volumes:
       - ./connection:/usr/src/app
       - connection-service-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./connection/.env.dev
     environment:
@@ -347,10 +347,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -359,16 +359,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   work-orders-service-dev:
     image: work-orders-service-dev:development
@@ -378,11 +378,11 @@ services:
     restart: unless-stopped
     container_name: work-orders-service-dev
     ports:
-      - "${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}"
+      - '${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}'
     volumes:
       - ./work-orders:/usr/src/app
       - work-orders-service-node-modules:/usr/src/app/node_modules
-    command: ["npm", "run", "start:dev"]
+    command: ['npm', 'run', 'start:dev']
     env_file:
       - ./work-orders/.env.dev
     environment:
@@ -393,10 +393,10 @@ services:
     healthcheck:
       test:
         [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}/health",
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}/health'
         ]
       interval: 30s
       timeout: 10s
@@ -405,16 +405,62 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: '0.5'
           memory: 512M
         reservations:
-          cpus: "0.25"
+          cpus: '0.25'
           memory: 256M
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
+
+  sigame-legacy-service-dev:
+    image: sigame-legacy-service-dev:development
+    build:
+      context: ./sigame-legacy
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: sigame-legacy-service-dev
+    ports:
+      - '${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}:${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}'
+    volumes:
+      - ./sigame-legacy:/usr/src/app
+      - sigame-legacy-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./sigame-legacy/.env.dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 volumes:
   client-gateway-node-modules:
@@ -426,6 +472,7 @@ volumes:
   companies-service-node-modules:
   connection-service-node-modules:
   work-orders-service-node-modules:
+  sigame-legacy-node-modules:
 
 networks:
   epaa-network-dev:
