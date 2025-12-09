@@ -462,6 +462,52 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  workers-service-dev:
+    image: workers-service-dev:development
+    build:
+      context: ./workers
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: workers-service-dev
+    ports:
+      - '${WORKERS_SERVER_PORT_DEVELOPMENT:-4016}:${WORKERS_SERVER_PORT_DEVELOPMENT:-4016}'
+    volumes:
+      - ./workers:/usr/src/app
+      - workers-service-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./workers/.env.dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${WORKERS_SERVER_PORT_DEVELOPMENT:-4016}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 volumes:
   client-gateway-node-modules:
   qrcode-service-node-modules:
@@ -473,6 +519,7 @@ volumes:
   connection-service-node-modules:
   work-orders-service-node-modules:
   sigame-legacy-node-modules:
+  workers-service-node-modules:
 
 networks:
   epaa-network-dev:
