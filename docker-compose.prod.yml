@@ -405,6 +405,46 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  workers-service:
+    image: workers-service:production
+    build:
+      context: ./workers
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: workers-service
+    ports:
+      - '${WORKERS_SERVER_PORT_PRODUCTION:-3016}:${WORKERS_SERVER_PORT_PRODUCTION:-3016}'
+    env_file:
+      - ./workers/.env
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${WORKERS_SERVER_PORT_PRODUCTION:-3016}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 networks:
   epaa-network:
     external: true
