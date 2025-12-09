@@ -33,3 +33,6 @@
 [submodule "sigame-legacy"]
 	path = sigame-legacy
 	url = https://github.com/gitmariosalazar/sigame-legacy.git
+[submodule "workers"]
+	path = workers
+	url = https://github.com/gitmariosalazar/work-orders-3000.git
