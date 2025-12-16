@@ -1,0 +1,50 @@
+services:
+  work-orders-epaa-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: work_orders_epaa_container_dev
+    restart: unless-stopped
+    env_file:
+      - .env.test
+    environment:
+      POSTGRES_USER: ${POSTGIS_USER}
+      POSTGRES_PASSWORD: ${POSTGIS_PASSWORD}
+      POSTGRES_DB: ${POSTGIS_DB}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "${POSTGIS_PORT}:5432"
+    volumes:
+      - work_orders_epaa_data_dev:/var/lib/postgresql
+      - ./postgis-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGIS_USER} -d ${POSTGIS_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 131072
+    mem_limit: 2g
+    mem_reservation: 1g
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    shm_size: "1g"
+
+volumes:
+  work_orders_epaa_data_dev:
+    name: work_orders_epaa_data_dev
+
+networks:
+  epaa-network-dev:
+    external: true

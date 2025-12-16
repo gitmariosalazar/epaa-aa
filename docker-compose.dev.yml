@@ -14,6 +14,7 @@ services:
       - /home/sigepaa/sigepaa/images/connections:/home/sigepaa/sigepaa/images/connections
       - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
       - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
+      - //home/sigepaa/sigepaa/images/work_orders:/home/sigepaa/sigepaa/images/work_orders
     command: ['npm', 'run', 'start:dev']
     env_file:
       - ./client-gateway/.env.dev
