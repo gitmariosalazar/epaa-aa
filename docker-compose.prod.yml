@@ -42,6 +42,7 @@ services:
       - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
       - /home/sigepaa/sigepaa/images/connections:/home/sigepaa/sigepaa/images/connections
       - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
+      - /home/sigepaa/sigepaa/images/work_orders:/home/sigepaa/sigepaa/images/work_orders
 
   qrcode-service:
     image: qrcode-service:production
