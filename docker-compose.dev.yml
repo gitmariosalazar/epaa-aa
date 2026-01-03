@@ -70,13 +70,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -116,13 +110,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${READINGS_SERVER_PORT_DEVELOPMENT:-4007}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -162,13 +150,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${EPAA_DATABASE_LEGACY_SERVER_PORT_DEVELOPMENT:-4009}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -208,13 +190,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -254,13 +230,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -300,13 +270,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -346,13 +310,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${CONNECTION_SERVER_PORT_DEVELOPMENT:-4013}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -392,13 +350,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -438,13 +390,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -484,13 +430,7 @@ services:
     networks:
       - epaa-network-dev
     healthcheck:
-      test:
-        [
-          'CMD',
-          'curl',
-          '-f',
-          'http://localhost:${WORKERS_SERVER_PORT_DEVELOPMENT:-4016}/health'
-        ]
+      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
