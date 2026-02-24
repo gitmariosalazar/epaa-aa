@@ -36,3 +36,6 @@
 [submodule "workers"]
 	path = workers
 	url = https://github.com/gitmariosalazar/work-orders-3000.git
+[submodule "location"]
+	path = location
+	url = git@github.com:gitmariosalazar/location.git
