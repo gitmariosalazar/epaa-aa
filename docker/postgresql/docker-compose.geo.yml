@@ -6,21 +6,21 @@ services:
     container_name: postgis_epaa_container
     restart: unless-stopped
     env_file:
-      - .env
+      - .env.development
     environment:
       POSTGRES_USER: ${POSTGIS_USER}
       POSTGRES_PASSWORD: ${POSTGIS_PASSWORD}
       POSTGRES_DB: ${POSTGIS_DB}
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+      POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
     ports:
-      - "${POSTGIS_PORT}:5432"
+      - '${POSTGIS_PORT}:5432'
     volumes:
       - postgis_epaa_data:/var/lib/postgresql
       - ./postgis-init:/docker-entrypoint-initdb.d:ro
     networks:
       - epaa-network-dev
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGIS_USER} -d ${POSTGIS_DB}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGIS_USER} -d ${POSTGIS_DB}']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -37,9 +37,9 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "5"
-    shm_size: "1g"
+        max-size: '10m'
+        max-file: '5'
+    shm_size: '1g'
 
 volumes:
   postgis_epaa_data:

@@ -17,7 +17,7 @@ services:
       - //home/sigepaa/sigepaa/images/work_orders:/home/sigepaa/sigepaa/images/work_orders
     command: ['npm', 'run', 'start:dev']
     env_file:
-      - ./client-gateway/.env.dev
+      - ./client-gateway/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
@@ -31,46 +31,6 @@ services:
           '-f',
           'http://localhost:${GATEWAY_SERVER_PORT_DEVELOPMENT:-4005}/health'
         ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    logging:
-      driver: json-file
-      options:
-        max-size: '10m'
-        max-file: '3'
-
-  qrcode-service-dev:
-    image: qrcode-service-dev:development
-    build:
-      context: ./qrcode
-      dockerfile: dockerfile.dev
-    restart: unless-stopped
-    container_name: qrcode-service-dev
-    ports:
-      - '${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4006}'
-    volumes:
-      - ./qrcode:/usr/src/app
-      - qrcode-service-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
-    env_file:
-      - ./qrcode/.env.dev
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - NODE_OPTIONS=--max-old-space-size=1024
-    networks:
-      - epaa-network-dev
-    healthcheck:
-      test: ['CMD', 'true']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -103,7 +63,7 @@ services:
       - readings-service-node-modules:/usr/src/app/node_modules
     command: ['npm', 'run', 'start:dev']
     env_file:
-      - ./readings/.env.dev
+      - ./readings/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
@@ -143,127 +103,7 @@ services:
       - epaa-database-legacy-node-modules:/usr/src/app/node_modules
     command: ['npm', 'run', 'start:dev']
     env_file:
-      - ./epaa-database-legacy/.env.dev
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - NODE_OPTIONS=--max-old-space-size=1024
-    networks:
-      - epaa-network-dev
-    healthcheck:
-      test: ['CMD', 'true']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    logging:
-      driver: json-file
-      options:
-        max-size: '10m'
-        max-file: '3'
-
-  property-service-dev:
-    image: property-service-dev:development
-    build:
-      context: ./property
-      dockerfile: dockerfile.dev
-    restart: unless-stopped
-    container_name: property-service-dev
-    ports:
-      - '${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4010}'
-    volumes:
-      - ./property:/usr/src/app
-      - property-service-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
-    env_file:
-      - ./property/.env.dev
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - NODE_OPTIONS=--max-old-space-size=1024
-    networks:
-      - epaa-network-dev
-    healthcheck:
-      test: ['CMD', 'true']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    logging:
-      driver: json-file
-      options:
-        max-size: '10m'
-        max-file: '3'
-
-  clients-service-dev:
-    image: clients-service-dev:development
-    build:
-      context: ./clients
-      dockerfile: dockerfile.dev
-    restart: unless-stopped
-    container_name: clients-service-dev
-    ports:
-      - '${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4011}'
-    volumes:
-      - ./clients:/usr/src/app
-      - clients-service-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
-    env_file:
-      - ./clients/.env.dev
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - NODE_OPTIONS=--max-old-space-size=1024
-    networks:
-      - epaa-network-dev
-    healthcheck:
-      test: ['CMD', 'true']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    logging:
-      driver: json-file
-      options:
-        max-size: '10m'
-        max-file: '3'
-
-  companies-service-dev:
-    image: companies-service-dev:development
-    build:
-      context: ./companies
-      dockerfile: dockerfile.dev
-    restart: unless-stopped
-    container_name: companies-service-dev
-    ports:
-      - '${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4012}'
-    volumes:
-      - ./companies:/usr/src/app
-      - companies-service-node-modules:/usr/src/app/node_modules
-    command: ['npm', 'run', 'start:dev']
-    env_file:
-      - ./companies/.env.dev
+      - ./epaa-database-legacy/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
@@ -303,7 +143,7 @@ services:
       - connection-service-node-modules:/usr/src/app/node_modules
     command: ['npm', 'run', 'start:dev']
     env_file:
-      - ./connection/.env.dev
+      - ./connection/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
@@ -329,21 +169,21 @@ services:
         max-size: '10m'
         max-file: '3'
 
-  work-orders-service-dev:
-    image: work-orders-service-dev:development
+  security-service-dev:
+    image: security-service-dev:development
     build:
-      context: ./work-orders
+      context: ./authentication
       dockerfile: dockerfile.dev
     restart: unless-stopped
-    container_name: work-orders-service-dev
+    container_name: security-service-dev
     ports:
-      - '${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}'
+      - '${SECURITY_SERVER_PORT_DEVELOPMENT:-4004}:${SECURITY_SERVER_PORT_DEVELOPMENT:-4004}'
     volumes:
-      - ./work-orders:/usr/src/app
-      - work-orders-service-node-modules:/usr/src/app/node_modules
+      - ./authentication:/usr/src/app
+      - security-service-node-modules:/usr/src/app/node_modules
     command: ['npm', 'run', 'start:dev']
     env_file:
-      - ./work-orders/.env.dev
+      - ./authentication/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
@@ -369,21 +209,21 @@ services:
         max-size: '10m'
         max-file: '3'
 
-  sigame-legacy-service-dev:
-    image: sigame-legacy-service-dev:development
+  clients-service-dev:
+    image: clients-service-dev:development
     build:
-      context: ./sigame-legacy
+      context: ./clients
       dockerfile: dockerfile.dev
     restart: unless-stopped
-    container_name: sigame-legacy-service-dev
+    container_name: clients-service-dev
     ports:
-      - '${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}:${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}'
+      - '${CLIENTS_SERVER_PORT_DEVELOPMENT:-4006}:${CLIENTS_SERVER_PORT_DEVELOPMENT:-4006}'
     volumes:
-      - ./sigame-legacy:/usr/src/app
-      - sigame-legacy-node-modules:/usr/src/app/node_modules
+      - ./clients:/usr/src/app
+      - clients-service-node-modules:/usr/src/app/node_modules
     command: ['npm', 'run', 'start:dev']
     env_file:
-      - ./sigame-legacy/.env.dev
+      - ./clients/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
@@ -409,21 +249,61 @@ services:
         max-size: '10m'
         max-file: '3'
 
-  workers-service-dev:
-    image: workers-service-dev:development
+  companies-service-dev:
+    image: companies-service-dev:development
     build:
-      context: ./workers
+      context: ./companies
       dockerfile: dockerfile.dev
     restart: unless-stopped
-    container_name: workers-service-dev
+    container_name: companies-service-dev
     ports:
-      - '${WORKERS_SERVER_PORT_DEVELOPMENT:-4016}:${WORKERS_SERVER_PORT_DEVELOPMENT:-4016}'
+      - '${COMPANIES_SERVER_PORT_DEVELOPMENT:-4008}:${COMPANIES_SERVER_PORT_DEVELOPMENT:-4008}'
     volumes:
-      - ./workers:/usr/src/app
-      - workers-service-node-modules:/usr/src/app/node_modules
+      - ./companies:/usr/src/app
+      - companies-service-node-modules:/usr/src/app/node_modules
     command: ['npm', 'run', 'start:dev']
     env_file:
-      - ./workers/.env.dev
+      - ./companies/.env.development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ['CMD', 'true']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  location-service-dev:
+    image: location-service-dev:development
+    build:
+      context: ./location
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: location-service-dev
+    ports:
+      - '${LOCATION_SERVER_PORT_DEVELOPMENT:-4010}:${LOCATION_SERVER_PORT_DEVELOPMENT:-4010}'
+    volumes:
+      - ./location:/usr/src/app
+      - location-service-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./location/.env.development
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NODE_OPTIONS=--max-old-space-size=1024
@@ -451,16 +331,18 @@ services:
 
 volumes:
   client-gateway-node-modules:
-  qrcode-service-node-modules:
+  #qrcode-service-node-modules:
   readings-service-node-modules:
   epaa-database-legacy-node-modules:
-  property-service-node-modules:
+  #property-service-node-modules:
   clients-service-node-modules:
   companies-service-node-modules:
   connection-service-node-modules:
-  work-orders-service-node-modules:
-  sigame-legacy-node-modules:
+  #work-orders-service-node-modules:
+  #sigame-legacy-node-modules:
   workers-service-node-modules:
+  security-service-node-modules:
+  location-service-node-modules:
 
 networks:
   epaa-network-dev:
