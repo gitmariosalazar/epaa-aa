@@ -39,7 +39,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -79,7 +79,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -119,7 +119,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -159,7 +159,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -199,7 +199,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -239,7 +239,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -279,7 +279,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -319,7 +319,47 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  qrcode-service-dev:
+    image: qrcode-service-dev:development
+    build:
+      context: ./qrcode
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    container_name: qrcode-service-dev
+    ports:
+      - '${QR_CODE_SERVER_PORT_DEVELOPMENT:-4012}:${QR_CODE_SERVER_PORT_DEVELOPMENT:-4012}'
+    volumes:
+      - ./qrcode:/usr/src/app
+      - qrcode-service-node-modules:/usr/src/app/node_modules
+      - /home/mariosalazar/Desktop/Epaa/images/qrcodes:/home/mariosalazar/Desktop/Epaa/images/qrcodes
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./qrcode/.env.development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ['CMD', 'true']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
         reservations:
           cpus: '0.25'
           memory: 256M
@@ -331,7 +371,7 @@ services:
 
 volumes:
   client-gateway-node-modules:
-  #qrcode-service-node-modules:
+  qrcode-service-node-modules:
   readings-service-node-modules:
   epaa-database-legacy-node-modules:
   #property-service-node-modules:

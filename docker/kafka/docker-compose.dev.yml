@@ -3,15 +3,16 @@ services:
     image: confluentinc/cp-kafka:latest
     privileged: true
     container_name: kafka-epaa-dev
+    hostname: kafka-epaa-dev
     ports:
-      - "9192:9092"   # mapeo host → puerto interno estándar para clientes
+      - '9192:9092' # mapeo host → puerto interno estándar para clientes
     env_file:
       - .env.dev
     environment:
       # KRaft mode (sin Zookeeper)
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_NODE_ID: 1
-      CLUSTER_ID: b7c8d9e0f1g23456hijk78   # puedes generar uno nuevo con kafka-storage random-uuid
+      CLUSTER_ID: b7c8d9e0f1g23456hijk78 # puedes generar uno nuevo con kafka-storage random-uuid
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-epaa-dev:9093
 
       # Listeners y advertised (clave para que clientes internos encuentren el broker)
@@ -22,7 +23,7 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       # Configuración básica para dev
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_NUM_PARTITIONS: 1
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -31,9 +32,10 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_LOG_RETENTION_HOURS: 168
       KAFKA_LOG_CLEANUP_POLICY: delete
+      KAFKA_MESSAGE_MAX_BYTES: 52428800 # 50MB
 
       # Rendimiento básico
-      KAFKA_HEAP_OPTS: "-Xms1g -Xmx1g"
+      KAFKA_HEAP_OPTS: '-Xms1g -Xmx1g'
 
     ulimits:
       nofile:
@@ -46,7 +48,13 @@ services:
     volumes:
       - kafka-epaa-data-dev:/var/lib/kafka/data
     healthcheck:
-      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      test:
+        [
+          'CMD',
+          'kafka-broker-api-versions',
+          '--bootstrap-server',
+          'localhost:9092'
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -55,8 +63,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: "10m"
-        max-file: "5"
+        max-size: '10m'
+        max-file: '5'
 
 networks:
   epaa-network-dev:
