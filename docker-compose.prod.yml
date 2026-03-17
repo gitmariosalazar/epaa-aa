@@ -324,6 +324,46 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  property-service:
+    image: property-service:production
+    build:
+      context: ./property
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: property-service
+    ports:
+      - '${PROPERTY_SERVER_PORT_PRODUCTION:-3010}:${PROPERTY_SERVER_PORT_PRODUCTION:-3010}'
+    env_file:
+      - ./property/.env.production
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${PROPERTY_SERVER_PORT_PRODUCTION:-3010}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 networks:
   epaa-network:
     external: true
