@@ -364,6 +364,126 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  work-orders-service:
+    image: work-orders-service:production
+    build:
+      context: ./work-orders
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: work-orders-service
+    ports:
+      - '${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}:${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}'
+    env_file:
+      - ./work-orders/.env.production
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${WORK_ORDERS_SERVER_PORT_PRODUCTION:-3014}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  workers-service:
+    image: workers-service:production
+    build:
+      context: ./workers
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: workers-service
+    ports:
+      - '${WORKERS_SERVER_PORT_PRODUCTION:-3016}:${WORKERS_SERVER_PORT_PRODUCTION:-3016}'
+    env_file:
+      - ./workers/.env.production
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${WORKERS_SERVER_PORT_PRODUCTION:-3016}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  sigame-legacy-service:
+    image: sigame-legacy-service:production
+    build:
+      context: ./sigame-legacy
+      dockerfile: dockerfile.prod
+    restart: unless-stopped
+    container_name: sigame-legacy-service
+    ports:
+      - '${SIGAME_LEGACY_SERVER_PORT_PRODUCTION:-3015}:${SIGAME_LEGACY_SERVER_PORT_PRODUCTION:-3015}'
+    env_file:
+      - ./sigame-legacy/.env.production
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${SIGAME_LEGACY_SERVER_PORT_PRODUCTION:-3015}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 networks:
   epaa-network:
     external: true
