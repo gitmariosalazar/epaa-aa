@@ -6,6 +6,10 @@ docker/sqlserver/.env*
 docker/sqlserver/.env*
 docker/kafka/.env*
 
+optimize_readings_indexes.sql
+sigepaa_production_schema_only.sql
+trash_rate.md
+
 ### Node ###
 # Logs
 logs

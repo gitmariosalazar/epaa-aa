@@ -4,6 +4,10 @@ services:
     build:
       context: ./client-gateway
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "client-gateway"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: client-gateway-epaa-dev
     ports:
@@ -54,6 +58,10 @@ services:
     build:
       context: ./readings
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "readings"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: readings-service-dev
     ports:
@@ -94,6 +102,10 @@ services:
     build:
       context: ./epaa-database-legacy
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "epaa-database-legacy"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: epaa-database-legacy-service-dev
     ports:
@@ -134,6 +146,10 @@ services:
     build:
       context: ./connection
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "connection"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: connection-service-dev
     ports:
@@ -174,6 +190,10 @@ services:
     build:
       context: ./authentication
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "security"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: security-service-dev
     ports:
@@ -214,6 +234,10 @@ services:
     build:
       context: ./clients
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "clients"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: clients-service-dev
     ports:
@@ -254,6 +278,10 @@ services:
     build:
       context: ./companies
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "companies"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: companies-service-dev
     ports:
@@ -294,6 +322,10 @@ services:
     build:
       context: ./location
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "location"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: location-service-dev
     ports:
@@ -334,6 +366,10 @@ services:
     build:
       context: ./qrcode
       dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "qrcode"
+        com.epaa.env: "development"
     restart: unless-stopped
     container_name: qrcode-service-dev
     ports:
@@ -369,20 +405,67 @@ services:
         max-size: '10m'
         max-file: '3'
 
+# -----------------------------------------------------------------------------
+# VOLÚMENES NOMBRADOS — node_modules por servicio
+# Estos volúmenes evitan que el bind mount del host sobreescriba los
+# node_modules instalados dentro del contenedor (patrón estándar en dev).
+# Con labels, pueden ser eliminados de forma selectiva sin afectar otros
+# proyectos en el mismo host.
+# -----------------------------------------------------------------------------
 volumes:
   client-gateway-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "client-gateway"
+      com.epaa.env: "development"
   qrcode-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "qrcode"
+      com.epaa.env: "development"
   readings-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "readings"
+      com.epaa.env: "development"
   epaa-database-legacy-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "epaa-database-legacy"
+      com.epaa.env: "development"
   #property-service-node-modules:
   clients-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "clients"
+      com.epaa.env: "development"
   companies-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "companies"
+      com.epaa.env: "development"
   connection-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "connection"
+      com.epaa.env: "development"
   #work-orders-service-node-modules:
   #sigame-legacy-node-modules:
   workers-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "workers"
+      com.epaa.env: "development"
   security-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "security"
+      com.epaa.env: "development"
   location-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "location"
+      com.epaa.env: "development"
 
 networks:
   epaa-network-dev:
