@@ -19,7 +19,7 @@ services:
       - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
       - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
       - //home/sigepaa/sigepaa/images/work_orders:/home/sigepaa/sigepaa/images/work_orders
-    command: ['npm', 'run', 'start:dev']
+    command: ['sh', '-c', 'echo "Esperando 15s a que los microservicios creen los topics de Kafka..." && sleep 15 && npm run start:dev']
     env_file:
       - ./client-gateway/.env.development
     environment:
@@ -405,6 +405,182 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  property-service-dev:
+    image: property-service-dev:development
+    build:
+      context: ./property
+      dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "property"
+        com.epaa.env: "development"
+    restart: unless-stopped
+    container_name: property-service-dev
+    ports:
+      - '${PROPERTY_SERVER_PORT_DEVELOPMENT:-4016}:${PROPERTY_SERVER_PORT_DEVELOPMENT:-4016}'
+    volumes:
+      - ./property:/usr/src/app
+      - property-service-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./property/.env.development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ['CMD', 'true']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  work-orders-service-dev:
+    image: work-orders-service-dev:development
+    build:
+      context: ./work-orders
+      dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "work-orders"
+        com.epaa.env: "development"
+    restart: unless-stopped
+    container_name: work-orders-service-dev
+    ports:
+      - '${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}:${WORK_ORDERS_SERVER_PORT_DEVELOPMENT:-4014}'
+    volumes:
+      - ./work-orders:/usr/src/app
+      - work-orders-service-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./work-orders/.env.development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ['CMD', 'true']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  workers-service-dev:
+    image: workers-service-dev:development
+    build:
+      context: ./workers
+      dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "workers"
+        com.epaa.env: "development"
+    restart: unless-stopped
+    container_name: workers-service-dev
+    ports:
+      - '${WORKERS_SERVER_PORT_DEVELOPMENT:-4017}:${WORKERS_SERVER_PORT_DEVELOPMENT:-4017}'
+    volumes:
+      - ./workers:/usr/src/app
+      - workers-service-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./workers/.env.development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ['CMD', 'true']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  sigame-legacy-service-dev:
+    image: sigame-legacy-service-dev:development
+    build:
+      context: ./sigame-legacy
+      dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: "epaa-aa"
+        com.epaa.service: "sigame-legacy"
+        com.epaa.env: "development"
+    restart: unless-stopped
+    container_name: sigame-legacy-service-dev
+    ports:
+      - '${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}:${SIGAME_LEGACY_SERVER_PORT_DEVELOPMENT:-4015}'
+    volumes:
+      - ./sigame-legacy:/usr/src/app
+      - sigame-legacy-node-modules:/usr/src/app/node_modules
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./sigame-legacy/.env.development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ['CMD', 'true']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 # -----------------------------------------------------------------------------
 # VOLÚMENES NOMBRADOS — node_modules por servicio
 # Estos volúmenes evitan que el bind mount del host sobreescriba los
@@ -449,8 +625,21 @@ volumes:
       com.epaa.project: "epaa-aa"
       com.epaa.service: "connection"
       com.epaa.env: "development"
-  #work-orders-service-node-modules:
-  #sigame-legacy-node-modules:
+  work-orders-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "work-orders"
+      com.epaa.env: "development"
+  property-service-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "property"
+      com.epaa.env: "development"
+  sigame-legacy-node-modules:
+    labels:
+      com.epaa.project: "epaa-aa"
+      com.epaa.service: "sigame-legacy"
+      com.epaa.env: "development"
   workers-service-node-modules:
     labels:
       com.epaa.project: "epaa-aa"

@@ -10,6 +10,7 @@ services:
         com.epaa.env: "production"
     restart: unless-stopped
     container_name: client-gateway-epaa
+    command: ['sh', '-c', 'echo "Esperando 15s a que los microservicios creen los topics de Kafka..." && sleep 15 && node dist/main.js']
     ports:
       - '${GATEWAY_SERVER_PORT_PRODUCTION:-3005}:${GATEWAY_SERVER_PORT_PRODUCTION:-3005}'
     env_file:

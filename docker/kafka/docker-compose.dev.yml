@@ -5,7 +5,7 @@ services:
     container_name: kafka-epaa-dev
     hostname: kafka-epaa-dev
     ports:
-      - '9192:9092' # mapeo host → puerto interno estándar para clientes
+      - '19092:19092' # Puerto para clientes externos (host u otra red)
     env_file:
       - .env.dev
     environment:
@@ -16,10 +16,10 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-epaa-dev:9093
 
       # Listeners y advertised (clave para que clientes internos encuentren el broker)
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-epaa-dev:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-epaa-dev:9092,EXTERNAL://192.168.0.111:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       # Configuración básica para dev

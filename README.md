@@ -4,253 +4,148 @@ Sistema de microservicios para la gestión de agua potable y alcantarillado.
 
 ---
 
-## ⚙️ Prerrequisitos
+## ⚙️ Prerrequisitos Globales
 
-- Docker Engine **v24+** (plugin `docker compose` v2, **NO** usar `docker-compose` legacy v1)
-- Crear las redes externas antes del primer arranque:
-
+Asegúrate de haber creado las redes de Docker antes del primer arranque:
 ```bash
 # Red de producción
-docker network create epaa-network
+docker network create epaa-network || true
 
 # Red de desarrollo
-docker network create epaa-network-dev
+docker network create epaa-network-dev || true
+
+# Carpetas de imágenes requeridas por los contenedores
+sudo mkdir -p /home/sigepaa/sigepaa/images/{readings,connections,qrcodes,work_orders}
 ```
 
 ---
 
-## 🚀 PRODUCCIÓN — Flujo Profesional de Deploy
+## 🚀 PRODUCCIÓN: DEPLOY DESDE CERO (RESET TOTAL)
 
-> **Regla de oro:** Siempre usar el script `deploy.prod.sh`. Hace todo el ciclo limpio en orden correcto.
+Usa este flujo si el servidor se corrompe, tienes errores de "UNKNOWN_TOPIC", o quieres empezar con una instalación 100% limpia. Apagará el sistema y destruirá el historial de Kafka.
 
+**1. Apagar todo y resetear Kafka:**
 ```bash
-# Deploy normal (updates de código, hotfixes)
-bash deploy.prod.sh
+docker compose -f docker-compose.prod.yml -p sigepaa-services-production down --remove-orphans
+cd docker/kafka
+bash deploy.prod.sh --reset-data
+# (Escribe CONFIRMAR cuando el script te lo pida)
+```
 
-# Deploy con limpieza total de imágenes (cambios grandes de deps, Dockerfile, etc.)
+**2. Levantar el Corazón de Mensajería (Kafka):**
+```bash
+# (Sigues dentro de la carpeta docker/kafka)
+bash deploy.prod.sh
+# Espera a que diga "✅ Kafka está HEALTHY" (puede tardar hasta 30s)
+
+# Crear los 26 tópicos del sistema
+bash create-topics.prod.sh
+```
+
+**3. Levantar Microservicios (Reconstrucción total):**
+```bash
+cd /home/mariosalazar/Desktop/Epaa/Git/backend/epaa-aa
 bash deploy.prod.sh --clean-all
 ```
 
+**4. Monitoreo en Producción:**
+```bash
+docker compose -f docker-compose.prod.yml -p sigepaa-services-production logs -f --tail=50
+```
+
 ---
 
-## 🛠️ DESARROLLO — Flujo con Hot-Reload
+## 🛠️ DESARROLLO (DEV): DEPLOY DESDE CERO (RESET TOTAL)
 
-> Los volúmenes de `node_modules` son nombrados y persistentes entre reinicios. Solo se eliminan si se pide explícitamente.
+Usa este flujo si Node.js se rompe, si tienes problemas con librerías de NPM, o si Kafka en desarrollo deja de funcionar y quieres resetear todo.
 
+**1. Apagar todo y limpiar dependencias:**
 ```bash
-# Levantar entorno dev por primera vez (o después de --down)
-bash deploy.dev.sh
-
-# Bajar el stack SIN eliminar node_modules (rearranque rápido)
-bash deploy.dev.sh --down
-
-# Rebuild de imágenes SIN tocar node_modules (cambios en Dockerfile.dev)
-bash deploy.dev.sh --rebuild
-
-# Reinstalar dependencias (package.json cambió → elimina node_modules y rebuild)
-bash deploy.dev.sh --clean-volumes
-
-# Reset total: elimina imágenes + node_modules + contenedores (empezar desde cero)
+# Desde la raíz del backend (/home/mariosalazar/Desktop/Epaa/Git/backend/epaa-aa)
 bash deploy.dev.sh --reset
+
+# Apagar Kafka Dev y destruir su volumen de datos
+cd docker/kafka
+bash deploy.dev.sh --reset-data
+# (Escribe CONFIRMAR cuando te lo pida)
 ```
 
-### Cuándo usar cada modo de dev
-
-| Situación | Comando |
-|---|---|
-| Primera vez / después de `--down` | `bash deploy.dev.sh` |
-| Cambié código fuente (hot-reload lo detecta solo) | — ninguno, es automático — |
-| Cambié `Dockerfile.dev` | `bash deploy.dev.sh --rebuild` |
-| Cambié `package.json` | `bash deploy.dev.sh --clean-volumes` |
-| Errores raros de dependencias / empezar de cero | `bash deploy.dev.sh --reset` |
-
-
-
-## 📋 Comandos Manuales (Referencia)
-
-> Usar solo si se necesita control granular. Para deploy completo, preferir el script.
-
-### ✅ Levantar el stack completo
-
+**2. Levantar Kafka Dev:**
 ```bash
-docker compose -f docker-compose.prod.yml up -d --remove-orphans
+# (Sigues dentro de la carpeta docker/kafka)
+bash deploy.dev.sh
+# Espera a que diga "✅ Kafka está HEALTHY"
+
+# Opcional pero recomendado: Crear los tópicos con las mismas particiones de Producción
+bash create-topics.dev.sh
 ```
 
-### ✅ Levantar y forzar rebuild de imágenes
-
+**3. Levantar Microservicios (con reinstalación de node_modules):**
 ```bash
-docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+cd /home/mariosalazar/Desktop/Epaa/Git/backend/epaa-aa
+bash deploy.dev.sh --clean-volumes
 ```
 
-### ✅ Levantar servicios específicos (con rebuild)
-
+**4. Monitoreo en Dev:**
 ```bash
-docker compose -f docker-compose.prod.yml up -d --build --remove-orphans \
-  security-service \
-  client-gateway-epaa \
-  readings-service
-```
-
-### ✅ Detener el stack (sin eliminar datos)
-
-```bash
-docker compose -f docker-compose.prod.yml down --remove-orphans
-```
-
-> ⚠️ **Nunca usar `down -v`** en producción. El flag `-v` elimina volúmenes con datos persistentes.
-
-### ✅ Construir imágenes sin caché (sin levantar)
-
-```bash
-# Todos los servicios
-docker compose -f docker-compose.prod.yml build --no-cache
-
-# Un servicio específico
-docker compose -f docker-compose.prod.yml build --no-cache security-service
-```
-
-### ✅ Reiniciar un servicio específico (sin rebuild)
-
-```bash
-docker compose -f docker-compose.prod.yml restart security-service
-```
-
-### ✅ Reiniciar un servicio con rebuild limpio
-
-```bash
-docker compose -f docker-compose.prod.yml up -d --build --remove-orphans security-service
+docker compose -f docker-compose.dev.yml logs -f --tail=50
 ```
 
 ---
 
-## 🧹 Limpieza de Huérfanos
+## 📋 Comandos Rápidos de Uso Diario
 
-### Eliminar imágenes dangling (huérfanas) solo del proyecto EPAA
+Si tu sistema ya está sano y solo quieres hacer operaciones de rutina, usa estos comandos desde la raíz del backend:
 
-```bash
-docker image prune -f --filter "label=com.epaa.project=epaa-aa"
-```
+**Desarrollo (Hot-Reload):**
+* `bash deploy.dev.sh` → Levanta el entorno normal.
+* `bash deploy.dev.sh --down` → Apaga el entorno sin borrar `node_modules`.
 
-### Eliminar TODAS las imágenes del proyecto (rebuild desde cero)
-
-```bash
-docker rmi -f $(docker images --filter "label=com.epaa.project=epaa-aa" -q)
-```
-
-### Eliminar volúmenes anónimos sin uso
-
-```bash
-docker volume prune -f
-```
-
-### Limpieza general del sistema Docker (con confirmación)
-
-```bash
-docker system prune -f
-```
-
-> ⚠️ `docker system prune` elimina imágenes, redes y volúmenes no usados por **cualquier** contenedor. Usarlo con cuidado.
+**Producción:**
+* `bash deploy.prod.sh` → Aplica actualizaciones de código rápidamente.
 
 ---
 
-## 📊 Monitoreo
+## 🏗️ CÓMO AGREGAR UN NUEVO TÓPICO O MICROSERVICIO
 
-### Ver estado de todos los contenedores del stack
+Si en el futuro creas un nuevo microservicio (ej. `billing-service`) o necesitas un nuevo tópico en Kafka, debes seguir exactamente estos **3 pasos** para que la arquitectura lo reconozca:
 
-```bash
-docker compose -f docker-compose.prod.yml ps
-```
-
-### Ver logs de todos los servicios (tiempo real)
+### Paso 1: Declararlo en el Script de Producción
+Abre el archivo `docker/kafka/create-topics.prod.sh` y agrega tu tópico (y obligatoriamente su versión `.reply`) en el arreglo `TOPICS=( ... )`.
 
 ```bash
-docker compose -f docker-compose.prod.yml logs -f --tail=50
+# Ejemplo de lo que debes agregar:
+"billing_topic:6:1"
+"billing_topic.reply:6:1"
 ```
 
-### Ver logs de un servicio específico
+### Paso 2: Enseñarle la ruta al Gateway (Diccionario)
+El Gateway necesita saber a qué tópico enviar las peticiones. Abre el archivo `client-gateway/src/shared/kafka/kafka-proxy.service.ts` y mapea la primera palabra de tus endpoints al nuevo tópico:
 
-```bash
-docker compose -f docker-compose.prod.yml logs -f --tail=100 security-service
+```typescript
+const serviceMapping: Record<string, string> = {
+  // ...
+  'billing': 'billing_topic',     // Todo lo que empiece por billing. (ej. billing.create)
+  'invoices': 'billing_topic',    // Todo lo que empiece por invoices.
+};
 ```
 
-### Ver uso de recursos (CPU/RAM)
+### Paso 3: Configurar el `main.ts` del Microservicio
+Abre el archivo `main.ts` de tu nuevo microservicio y asegúrate de usar la clase `CustomServerKafka` (para evitar errores de formateo JSON) indicando que escuche tu nuevo tópico:
 
-```bash
-docker stats $(docker compose -f docker-compose.prod.yml ps -q)
+```typescript
+app.connectMicroservice<MicroserviceOptions>({
+  strategy: new CustomServerKafka({
+    client: {
+      clientId: 'BILLING_KAFKA_CLIENT_ID',
+      brokers: [process.env.KAFKA_BROKERS || 'localhost:9092'],
+    },
+    consumer: { groupId: 'BILLING_KAFKA_GROUP_ID' },
+    topics: ['billing_topic'], // 👈 AQUÍ LE DICES QUE ESCUCHE EL NUEVO TÓPICO
+  }),
+});
 ```
 
----
-
-## 🔍 Diagnóstico de Problemas
-
-### Ver imágenes huérfanas actuales
-
-```bash
-docker images --filter "dangling=true"
-```
-
-### Ver volúmenes sin uso
-
-```bash
-docker volume ls --filter "dangling=true"
-```
-
-### Ver contenedores huérfanos (detenidos)
-
-```bash
-docker ps -a --filter "status=exited"
-```
-
-### Inspeccionar healthcheck de un servicio
-
-```bash
-docker inspect --format='{{json .State.Health}}' security-service | jq
-```
-
----
-
-## 📦 Servicios del Stack
-
-| Servicio | Puerto | Descripción |
-|---|---|---|
-| `client-gateway-epaa` | 3005 | API Gateway principal |
-| `security-service` | 3004 | Autenticación y autorización |
-| `readings-service` | 3007 | Gestión de lecturas |
-| `connection-service` | 3013 | Gestión de acometidas |
-| `clients-service` | 3011 | Gestión de clientes |
-| `companies-service` | 3012 | Gestión de empresas |
-| `property-service` | 3010 | Gestión de predios |
-| `location-service` | 3017 | Gestión de ubicaciones |
-| `work-orders-service` | 3014 | Órdenes de trabajo |
-| `workers-service` | 3016 | Gestión de técnicos |
-| `epaa-database-legacy-service` | 3009 | Servicio DB legacy |
-| `sigame-legacy-service` | 3015 | Integración SIGAME |
-
----
-
-## ❌ Antipatrones — Lo que NUNCA se debe hacer
-
-```bash
-# ❌ MAL: sintaxis legacy, sin --remove-orphans
-sudo docker-compose -f docker-compose.prod.yml up -d
-
-# ❌ MAL: down con -v elimina volúmenes de datos en producción
-docker compose -f docker-compose.prod.yml down -v
-
-# ❌ MAL: up sin --remove-orphans deja contenedores fantasma
-docker compose -f docker-compose.prod.yml up -d
-
-# ❌ MAL: system prune --volumes en producción sin confirmar
-docker system prune --volumes -f
-```
-
-```bash
-# ✅ BIEN: v2, siempre con --remove-orphans
-docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
-
-# ✅ BIEN: down seguro sin tocar volúmenes
-docker compose -f docker-compose.prod.yml down --remove-orphans
-
-# ✅ MEJOR: usar el script de deploy que lo hace todo en orden
-bash deploy.prod.sh
-```
+**Para desplegar este cambio:**
+1. **Desarrollo:** Corre `bash deploy.dev.sh`. Kafka auto-creará el tópico al instante.
+2. **Producción:** Ejecuta `bash docker/kafka/create-topics.prod.sh` y luego `bash deploy.prod.sh` para actualizar el código.

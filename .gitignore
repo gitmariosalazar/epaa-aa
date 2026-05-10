@@ -10,6 +10,11 @@ optimize_readings_indexes.sql
 sigepaa_production_schema_only.sql
 trash_rate.md
 
+add-retry.js
+sqldb.sql
+scratch/
+epaa-database-legacy/scratch/
+
 ### Node ###
 # Logs
 logs
@@ -146,6 +151,7 @@ dist
 ### Node Patch ###
 # Serverless Webpack directories
 .webpack/
+cleanup.sh
 
 # Optional stylelint cache
 

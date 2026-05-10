@@ -158,6 +158,7 @@ echo -e "${GREEN}✅ Imágenes dangling eliminadas${NC}"
 
 echo -e "\n${YELLOW}[3/3] Levantando stack de desarrollo con hot-reload...${NC}"
 docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
+#docker compose -f "$COMPOSE_FILE" up --build --remove-orphans
 echo -e "${GREEN}✅ Stack levantado${NC}"
 
 docker compose -f "$COMPOSE_FILE" ps
