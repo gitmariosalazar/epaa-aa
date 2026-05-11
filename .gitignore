@@ -14,6 +14,7 @@ add-retry.js
 sqldb.sql
 scratch/
 epaa-database-legacy/scratch/
+nginx.conf
 
 ### Node ###
 # Logs

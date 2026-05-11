@@ -65,8 +65,8 @@ echo -e "${GREEN}✅ Volúmenes sin usar eliminados${NC}"
 
 # --- Paso 4: Construir y levantar el stack ---
 echo -e "\n${YELLOW}[4/5] Construyendo imágenes y levantando el stack...${NC}"
-#docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d --build --remove-orphans
-docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up --build --remove-orphans
+docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d --build --remove-orphans
+#docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up --build --remove-orphans
 echo -e "${GREEN}✅ Stack levantado${NC}"
 
 # --- Paso 5: Verificar estado de los contenedores ---
