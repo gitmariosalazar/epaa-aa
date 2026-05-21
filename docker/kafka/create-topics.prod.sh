@@ -52,6 +52,8 @@ TOPICS=(
   "inventory_topic.reply:6:1"
   "location_topic:6:1"
   "location_topic.reply:6:1"
+  "notifications_topic:6:1"
+  "notifications_topic.reply:6:1"
   "property_topic:6:1"
   "property_topic.reply:6:1"
   "qrcode_topic:6:1"

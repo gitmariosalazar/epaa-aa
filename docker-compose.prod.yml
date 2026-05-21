@@ -5,12 +5,17 @@ services:
       context: ./client-gateway
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "client-gateway"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'client-gateway'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: client-gateway-epaa
-    command: ['sh', '-c', 'echo "Esperando 15s a que los microservicios creen los topics de Kafka..." && sleep 15 && node dist/main.js']
+    command:
+      [
+        'sh',
+        '-c',
+        'echo "Esperando 15s a que los microservicios creen los topics de Kafka..." && sleep 15 && node dist/main.js'
+      ]
     ports:
       - '${GATEWAY_SERVER_PORT_PRODUCTION:-3005}:${GATEWAY_SERVER_PORT_PRODUCTION:-3005}'
     env_file:
@@ -55,9 +60,9 @@ services:
       context: ./readings
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "readings"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'readings'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: readings-service
     ports:
@@ -99,9 +104,9 @@ services:
       context: ./epaa-database-legacy
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "epaa-database-legacy"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'epaa-database-legacy'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: epaa-database-legacy-service
     ports:
@@ -143,9 +148,9 @@ services:
       context: ./connection
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "connection"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'connection'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: connection-service
     ports:
@@ -187,9 +192,9 @@ services:
       context: ./authentication
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "security"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'security'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: security-service
     ports:
@@ -231,9 +236,9 @@ services:
       context: ./clients
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "clients"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'clients'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: clients-service
     ports:
@@ -275,9 +280,9 @@ services:
       context: ./companies
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "companies"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'companies'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: companies-service
     ports:
@@ -319,9 +324,9 @@ services:
       context: ./location
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "location"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'location'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: location-service
     ports:
@@ -363,9 +368,9 @@ services:
       context: ./property
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "property"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'property'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: property-service
     ports:
@@ -407,9 +412,9 @@ services:
       context: ./work-orders
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "work-orders"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'work-orders'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: work-orders-service
     ports:
@@ -451,9 +456,9 @@ services:
       context: ./workers
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "workers"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'workers'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: workers-service
     ports:
@@ -495,9 +500,9 @@ services:
       context: ./sigame-legacy
       dockerfile: dockerfile.prod
       labels:
-        com.epaa.project: "epaa-aa"
-        com.epaa.service: "sigame-legacy"
-        com.epaa.env: "production"
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'sigame-legacy'
+        com.epaa.env: 'production'
     restart: unless-stopped
     container_name: sigame-legacy-service
     ports:
@@ -514,6 +519,50 @@ services:
           'curl',
           '-f',
           'http://localhost:${SIGAME_LEGACY_SERVER_PORT_PRODUCTION:-3015}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  notifications-service:
+    image: notifications-service:production
+    build:
+      context: ./notifications
+      dockerfile: dockerfile.prod
+      labels:
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'notifications'
+        com.epaa.env: 'production'
+    restart: unless-stopped
+    container_name: notifications-service
+    ports:
+      - '${NOTIFICATIONS_SERVER_PORT_PRODUCTION:-3018}:${NOTIFICATIONS_SERVER_PORT_PRODUCTION:-3018}'
+    env_file:
+      - ./notifications/.env.production
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${NOTIFICATIONS_SERVER_PORT_PRODUCTION:-3018}/health'
         ]
       interval: 30s
       timeout: 10s

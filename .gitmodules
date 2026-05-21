@@ -39,3 +39,7 @@
 [submodule "location"]
 	path = location
 	url = https://github.com/gitmariosalazar/location.git
+[submodule "notifications"]
+	path = notifications
+	url = https://github.com/gitmariosalazar/notifications.git
+	branch = develop
