@@ -630,6 +630,51 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  documents-service-dev:
+    image: documents-service-dev:development
+    build:
+      context: ./documents
+      dockerfile: dockerfile.dev
+      labels:
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'documents'
+        com.epaa.env: 'development'
+    restart: unless-stopped
+    container_name: documents-service-dev
+    ports:
+      - '${DOCUMENTS_SERVER_PORT_DEVELOPMENT:-4019}:${DOCUMENTS_SERVER_PORT_DEVELOPMENT:-4019}'
+    volumes:
+      - ./documents:/usr/src/app
+      - documents-service-node-modules:/usr/src/app/node_modules
+      - /home/mariosalazar/Desktop/documents:/home/mariosalazar/Desktop/documents
+    command: ['npm', 'run', 'start:dev']
+    env_file:
+      - ./documents/.env.development
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_OPTIONS=--max-old-space-size=1024
+    networks:
+      - epaa-network-dev
+    healthcheck:
+      test: ['CMD', 'true']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 # -----------------------------------------------------------------------------
 # VOLÚMENES NOMBRADOS — node_modules por servicio
 # Estos volúmenes evitan que el bind mount del host sobreescriba los
@@ -708,6 +753,11 @@ volumes:
     labels:
       com.epaa.project: 'epaa-aa'
       com.epaa.service: 'notifications'
+      com.epaa.env: 'development'
+  documents-service-node-modules:
+    labels:
+      com.epaa.project: 'epaa-aa'
+      com.epaa.service: 'documents'
       com.epaa.env: 'development'
 
 networks:

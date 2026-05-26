@@ -43,3 +43,7 @@
 	path = notifications
 	url = https://github.com/gitmariosalazar/notifications.git
 	branch = develop
+[submodule "documents"]
+	path = documents
+	url = https://github.com/gitmariosalazar/documents-epaa.git
+	branch = develop

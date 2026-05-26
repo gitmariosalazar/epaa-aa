@@ -582,6 +582,52 @@ services:
         max-size: '10m'
         max-file: '3'
 
+  documents-service:
+    image: documents-service:production
+    build:
+      context: ./documents
+      dockerfile: dockerfile.prod
+      labels:
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'documents'
+        com.epaa.env: 'production'
+    restart: unless-stopped
+    container_name: documents-service
+    ports:
+      - '${DOCUMENTS_SERVER_PORT_PRODUCTION:-3019}:${DOCUMENTS_SERVER_PORT_PRODUCTION:-3019}'
+    env_file:
+      - ./documents/.env.production
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${DOCUMENTS_SERVER_PORT_PRODUCTION:-3019}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+    volumes:
+      - ${DOCUMENTS_STORAGE_HOST_PATH:-/home/sigepaa/sigepaa/documents}:/home/sigepaa/sigepaa/documents
+
 networks:
   epaa-network:
     external: true

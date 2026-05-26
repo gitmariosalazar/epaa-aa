@@ -18,6 +18,7 @@ set -e
 PROJECT_LABEL="com.epaa.project=epaa-aa"
 ENV_LABEL="com.epaa.env=development"
 COMPOSE_FILE="docker-compose.dev.yml"
+PROJECT_NAME="sigepaa-services-development"
 
 # Colores
 RED='\033[0;31m'
@@ -32,7 +33,7 @@ NC='\033[0m'
 # =============================================================================
 force_remove_conflicting() {
   local CONFLICTING
-  CONFLICTING=$(docker compose -f "$COMPOSE_FILE" config 2>/dev/null | grep 'container_name:' | awk '{print $2}')
+  CONFLICTING=$(docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" config 2>/dev/null | grep 'container_name:' | awk '{print $2}')
   if [ -n "$CONFLICTING" ]; then
     for CNAME in $CONFLICTING; do
       if docker ps -a --format '{{.Names}}' | grep -qx "$CNAME"; then
@@ -52,7 +53,7 @@ echo -e "${CYAN}========================================${NC}"
 # =============================================================================
 if [[ "$1" == "--down" ]]; then
   echo -e "\n${YELLOW}Deteniendo stack de desarrollo...${NC}"
-  docker compose -f "$COMPOSE_FILE" down --remove-orphans || true
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down --remove-orphans || true
   force_remove_conflicting
   echo -e "${GREEN}✅ Stack detenido. Los volúmenes de node_modules fueron preservados.${NC}"
   exit 0
@@ -71,7 +72,7 @@ if [[ "$1" == "--reset" ]]; then
   fi
 
   echo -e "\n${YELLOW}[1/3] Deteniendo stack y eliminando contenedores huérfanos...${NC}"
-  docker compose -f "$COMPOSE_FILE" down --remove-orphans || true
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down --remove-orphans || true
   force_remove_conflicting
   echo -e "${GREEN}✅ Stack detenido${NC}"
 
@@ -98,7 +99,7 @@ fi
 # =============================================================================
 if [[ "$1" == "--clean-volumes" ]]; then
   echo -e "\n${YELLOW}[1/4] Deteniendo stack...${NC}"
-  docker compose -f "$COMPOSE_FILE" down --remove-orphans || true
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down --remove-orphans || true
   force_remove_conflicting
   echo -e "${GREEN}✅ Stack detenido${NC}"
 
@@ -111,10 +112,10 @@ if [[ "$1" == "--clean-volumes" ]]; then
   echo -e "${GREEN}✅ Imágenes dangling eliminadas${NC}"
 
   echo -e "\n${YELLOW}[4/4] Construyendo y levantando el stack (reinstalará node_modules)...${NC}"
-  docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d --build --remove-orphans
   echo -e "${GREEN}✅ Stack levantado con node_modules frescos${NC}"
 
-  docker compose -f "$COMPOSE_FILE" ps
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" ps
   echo -e "\n${CYAN}========================================${NC}"
   echo -e "${GREEN}✅ Entorno DEV listo (con deps reinstaladas)${NC}"
   echo -e "${CYAN}========================================${NC}"
@@ -126,7 +127,7 @@ fi
 # =============================================================================
 if [[ "$1" == "--rebuild" ]]; then
   echo -e "\n${YELLOW}[1/3] Deteniendo stack...${NC}"
-  docker compose -f "$COMPOSE_FILE" down --remove-orphans || true
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down --remove-orphans || true
   force_remove_conflicting
   echo -e "${GREEN}✅ Stack detenido${NC}"
 
@@ -135,10 +136,10 @@ if [[ "$1" == "--rebuild" ]]; then
   echo -e "${GREEN}✅ Imágenes dangling eliminadas${NC}"
 
   echo -e "\n${YELLOW}[3/3] Construyendo y levantando stack...${NC}"
-  docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d --build --remove-orphans
   echo -e "${GREEN}✅ Stack levantado${NC}"
 
-  docker compose -f "$COMPOSE_FILE" ps
+  docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" ps
   echo -e "\n${CYAN}========================================${NC}"
   echo -e "${GREEN}✅ Entorno DEV listo (rebuild de imágenes)${NC}"
   echo -e "${CYAN}========================================${NC}"
@@ -149,7 +150,7 @@ fi
 # DEFAULT: Levantar stack (primera vez o después de --down)
 # =============================================================================
 echo -e "\n${YELLOW}[1/3] Eliminando contenedores huérfanos...${NC}"
-docker compose -f "$COMPOSE_FILE" down --remove-orphans 2>/dev/null || true
+docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down --remove-orphans 2>/dev/null || true
 echo -e "${GREEN}✅ Limpieza previa completada${NC}"
 
 echo -e "\n${YELLOW}[2/3] Limpiando imágenes dangling del proyecto...${NC}"
@@ -157,18 +158,18 @@ docker image prune -f --filter "label=$PROJECT_LABEL"
 echo -e "${GREEN}✅ Imágenes dangling eliminadas${NC}"
 
 echo -e "\n${YELLOW}[3/3] Levantando stack de desarrollo con hot-reload...${NC}"
-docker compose -f "$COMPOSE_FILE" up -d --build --remove-orphans
-#docker compose -f "$COMPOSE_FILE" up --build --remove-orphans
+docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d --build --remove-orphans
+#docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up --build --remove-orphans
 echo -e "${GREEN}✅ Stack levantado${NC}"
 
-docker compose -f "$COMPOSE_FILE" ps
+docker compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" ps
 
 echo -e "\n${CYAN}========================================${NC}"
 echo -e "${GREEN}✅ Entorno DEV listo con hot-reload 🔥${NC}"
 echo -e "${CYAN}========================================${NC}"
 echo -e ""
 echo -e "${YELLOW}Comandos útiles:${NC}"
-echo -e "  Ver logs:             docker compose -f $COMPOSE_FILE logs -f --tail=50"
+echo -e "  Ver logs:             docker compose -f $COMPOSE_FILE -p $PROJECT_NAME logs -f --tail=50"
 echo -e "  Bajar stack:          bash deploy.dev.sh --down"
 echo -e "  Rebuild imágenes:     bash deploy.dev.sh --rebuild"
 echo -e "  Reinstalar deps:      bash deploy.dev.sh --clean-volumes"
