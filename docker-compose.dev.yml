@@ -162,6 +162,7 @@ services:
     volumes:
       - ./connection:/usr/src/app
       - connection-service-node-modules:/usr/src/app/node_modules
+      - /home/mariosalazar/Desktop/documents:/home/mariosalazar/Desktop/documents
     command: ['npm', 'run', 'start:dev']
     env_file:
       - ./connection/.env.development

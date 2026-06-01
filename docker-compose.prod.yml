@@ -185,6 +185,8 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+    volumes:
+      - ${CONNECTION_DOCUMENTS_STORAGE_HOST_PATH:-/home/sigepaa/sigepaa/documents}:/home/sigepaa/sigepaa/documents
 
   security-service:
     image: security-service:production
