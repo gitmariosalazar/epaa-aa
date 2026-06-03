@@ -19,6 +19,7 @@ services:
       - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
       - /home/sigepaa/sigepaa/images/readings:/home/sigepaa/sigepaa/images/readings
       - //home/sigepaa/sigepaa/images/work_orders:/home/sigepaa/sigepaa/images/work_orders
+      - /home/mariosalazar/Desktop/documents:/home/mariosalazar/Desktop/documents
     command:
       [
         'sh',
