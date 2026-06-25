@@ -53,6 +53,7 @@ services:
       - /home/sigepaa/sigepaa/images/connections:/home/sigepaa/sigepaa/images/connections
       - /home/sigepaa/sigepaa/images/qrcodes:/home/sigepaa/sigepaa/images/qrcodes
       - /home/sigepaa/sigepaa/images/work_orders:/home/sigepaa/sigepaa/images/work_orders
+      - /home/sigepaa/sigepaa/images/incidents:/home/sigepaa/sigepaa/images/incidents
       - ${CONNECTION_DOCUMENTS_STORAGE_HOST_PATH:-/home/sigepaa/sigepaa/documents}:/home/sigepaa/sigepaa/documents
 
   readings-service:
