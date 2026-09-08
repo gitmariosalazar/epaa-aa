@@ -6,6 +6,8 @@ docker/sqlserver/.env*
 docker/sqlserver/.env*
 docker/kafka/.env*
 
+fix_queries.py
+
 optimize_readings_indexes.sql
 sigepaa_production_schema_only.sql
 trash_rate.md
