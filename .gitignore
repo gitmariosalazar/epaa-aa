@@ -17,6 +17,7 @@ sqldb.sql
 scratch/
 epaa-database-legacy/scratch/
 nginx.conf
+prompts.md
 
 ### Node ###
 # Logs
