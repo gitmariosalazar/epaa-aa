@@ -632,6 +632,50 @@ services:
     volumes:
       - ${DOCUMENTS_STORAGE_HOST_PATH:-/home/sigepaa/sigepaa/documents}:/home/sigepaa/sigepaa/documents
 
+  network-operations-service:
+    image: network-operations-service:production
+    build:
+      context: ./network-operations
+      dockerfile: dockerfile.prod
+      labels:
+        com.epaa.project: 'epaa-aa'
+        com.epaa.service: 'network-operations'
+        com.epaa.env: 'production'
+    restart: unless-stopped
+    container_name: network-operations-service
+    ports:
+      - '${NETWORK_OPERATIONS_SERVER_PORT_PRODUCTION:-3020}:${NETWORK_OPERATIONS_SERVER_PORT_PRODUCTION:-3020}'
+    env_file:
+      - ./network-operations/.env.production
+      - .env
+    networks:
+      - epaa-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:${NETWORK_OPERATIONS_SERVER_PORT_PRODUCTION:-3020}/health'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1536M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
 networks:
   epaa-network:
     external: true
