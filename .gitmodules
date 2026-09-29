@@ -47,3 +47,7 @@
 	path = documents
 	url = https://github.com/gitmariosalazar/documents-epaa.git
 	branch = develop
+[submodule "network-operations"]
+	path = network-operations
+	url = https://github.com/gitmariosalazar/network-operations.git
+	branch = develop
